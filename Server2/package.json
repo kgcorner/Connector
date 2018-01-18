@@ -1,0 +1,46 @@
+{
+  "name": "indianhistory",
+  "version": "1.0.0",
+  "description": "App for informations on Indian History",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel-core/register  './test/*spec*'",
+    "start": "nodemon app.js  --inspect --exec babel-node --presets es2015,stage-2",
+    "cover": "babel-node --presets es2015,stage-2 ./node_modules/istanbul/lib/cli cover node_modules/mocha/bin/_mocha -- '*/test*'"
+  },
+  "dependencies": {
+    "body-parser": "*",
+    "hapi": "^16.1.0",
+    "mongoose": "^4.9.2",
+    "node-schedule": "^1.2.5",
+    "pods": "^2.0.0",
+    "properties-reader": "0.0.16",
+    "redis": "^2.8.0",
+    "winston": "^2.3.1"
+  },
+  "author": "Kumar Gaurav",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "blanket": "^1.2.3",
+    "chai": "^3.5.0",
+    "chai-immutable": "^1.6.0",
+    "istanbul": "^0.4.5",
+    "istanbul-harmony": "^0.3.16",
+    "jsdom": "^9.12.0",
+    "mocha": "^3.2.0",
+    "should": "^11.2.1",
+    "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
+  "blanket": {
+    "pattern": "genres/test*.js"
+  }
+}
