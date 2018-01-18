@@ -1,0 +1,188 @@
+{
+   "swagger":"2.0",
+   "info":{
+      "description":"Hyland Softwares India",
+      "version":"1.0.0",
+      "title":"Generic Connector",
+      "contact":{
+         "email":"kumar.gaurav@hyland.com"
+      }
+   },
+   "host":"localhost:3300",
+   "basePath":"/",
+   "tags":[
+      {
+         "name":"manage",
+         "description":"Everything about authorization and authentication"
+      },
+      {
+         "name":"run",
+         "description":"Access leave details"
+      }
+   ],
+   "schemes":[
+      "http"
+   ],
+   "paths":{
+      "/channels":{
+         "post":{
+            "tags":[
+               "Manage"
+            ],
+            "summary":"Add a new channel",
+            "description":"Creates a new channel in the connector",
+            "operationId":"createChannel",
+            "consumes":[
+               "application/json"
+            ],
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "in":"body",
+                  "name":"Payload",
+                  "description":"Payload for Channel",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/channel"
+                  }
+               }
+            ],
+            "responses":{
+               "424":{
+                  "description":"Channel/Step with identification 'X' already exists"
+               },
+               "200":{
+                    "description":"Channel has been added sucesfully"
+                }
+            }
+         }
+      },
+      "/channels/{id}":{
+         "delete":{
+            "tags":[
+               "Manage"
+            ],
+            "summary":"Deletes a channel",
+            "description":"Delete an existing channel identified by an id",
+            "operationId":"deleteChannel",
+            "consumes":[
+               "application/json"
+            ],
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "in":"path",
+                  "name":"id",
+                  "description":"identifier of the Channel",
+                  "required":true
+               }
+            ],
+            "responses":{
+               "424":{
+                  "description":"Channel with identifier does not exist"
+               },
+               "200":{
+                    "description":"Channel has been deleted sucesfully"
+                }
+            }
+         }
+      },
+      "/channels/{channelId}/processes/{processId}":{
+         "delete":{
+            "tags":[
+               "Manage"
+            ],
+            "summary":"Runs a process in channel",
+            "description":"Run a step/process identified by processId defined in channel identified by channelId",
+            "operationId":"runStep",
+            "consumes":[
+               "application/json"
+            ],
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "in":"path",
+                  "name":"id",
+                  "description":"identifier of the Channel",
+                  "required":true
+               },
+               {
+                  "in":"path",
+                  "name":"processId",
+                  "description":"identifier of the step/process",
+                  "required":true
+               }
+            ],
+            "responses":{
+               "424":{
+                  "description":"Channel with identifier does not exist"
+               },
+               "200":{
+                    "description":"Channel has been deleted sucesfully"
+                }
+            }
+         }
+      }
+   },
+   "definitions":{
+     "step":{
+        "type":"object",
+        "properties":{
+          "identifier":{
+               "type":"string"
+          },
+          "mapping":{
+            "type":"object"
+          },
+          "source":{
+            "type":"object",
+            "propeties": {
+              "endpoint":{
+                "type":"string"
+                
+              },
+              "method":{
+                "type":"string"
+              },
+              "contentType":{
+                "type":"string"
+              },
+              "headers":{
+                "type":"array"
+              }
+            }
+          }
+        }
+     },
+      "channel":{
+         "type":"object",
+         "properties":{
+            "identifier":{
+               "type":"string"
+            },
+            "steps":{
+               "type":"array",
+               "items":{
+                  "$ref":"#/definitions/step"
+                }
+            }
+            
+         },
+         "xml":{
+            "name":"Order"
+         }
+      }
+
+
+   },
+   "externalDocs":{
+      "description":"Find out more about Swagger",
+      "url":"http://swagger.io"
+   }
+}

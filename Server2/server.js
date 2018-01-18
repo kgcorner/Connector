@@ -3,21 +3,12 @@ import Hapi from 'hapi';
 
 let server = new Hapi.Server();
 let app = () =>{
-    
-  
-
-
-
-
-
-
-
-    server.connection({port:3000,host:'localhost', routes: {cors:{"headers":["Accept", "Authorization", "Content-Type", "If-None-Match", "x-user-id"]}}});
+    server.connection({port:3302,host:'localhost', routes: {cors:{"headers":["Accept", "Authorization", "Content-Type", "If-None-Match", "x-user-id"]}}});
     server.route({
-        method: 'GET',
-        path: '/test',
+        method: 'POST',
+        path: '/fund/request',
         handler: function (request, reply) {
-            reply("Hello World");
+            reply(request.payload);
         }
     });   
     server.start((err)=>{

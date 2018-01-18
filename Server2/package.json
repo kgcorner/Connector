@@ -1,11 +1,12 @@
 {
-  "name": "indianhistory",
+  "name": "connector",
   "version": "1.0.0",
-  "description": "App for informations on Indian History",
-  "main": "app.js",
+  "description": "App for informations on Connector",
+  "main": "server.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register  './test/*spec*'",
-    "start": "nodemon app.js  --inspect --exec babel-node --presets es2015,stage-2",
+    "build": "babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "start": "npm run build && node dist/server.js",
     "cover": "babel-node --presets es2015,stage-2 ./node_modules/istanbul/lib/cli cover node_modules/mocha/bin/_mocha -- '*/test*'"
   },
   "dependencies": {
