@@ -1,8 +1,11 @@
 'use-strict'
 import Hapi from 'hapi';
 import http from './http';
+import fs from 'fs';
+
+
 let server = new Hapi.Server();
-let employees = [];
+let requests = [];
 function makeid() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -12,40 +15,111 @@ function makeid() {
   
     return text;
 }
+
+function onFundRequest(request) {
+    http.request("localhost:3303",3303,"channels/fund/processes/request",null,"POST", request, (res)=>{
+        console.log(res);
+    })
+}
+
+function onFundApproval(request) {
+    http.request("localhost:3303",3303,"channels/fund/processes/approve",null,"POST", request, (res)=>{
+        console.log(res);
+    })
+}
+
 let app = () =>{
-    server.connection({port:3000,host:'localhost', routes: {cors:{"headers":["Accept", "Authorization", "Content-Type", "If-None-Match", "x-user-id"]}}});
+    server.connection({port:3301,host:'localhost', routes: {cors:{"headers":["Accept", "Authorization", "Content-Type", "If-None-Match", "x-user-id"]}}});
     server.route({
         method: 'POST',
-        path: '/employee',
-        handler: function (request, reply) {
-            let employee = request.payload;
-            employee.id = makeid;
-            employees.push(employee);
-            let headers = {
-                "X-ACCESS-TOKEN":"7pnboh2ah6me04583n59s37sak",
-                "X-USER-ID":"16",
-                "X-DATE-TOKEN":"1"
-            };
-            http.get("api.pixyfi.com", "80", "/public/feeds?page=1", headers, function(res){
-                reply(res);
-            }, 'GET');
-        }
-    });   
+        path: '/funds',
+        config: {
+            payload:{
+                  maxBytes: 209715200,
+                  output:'stream',
+                  parse: true
+            }, 
+            handler: function (request, reply) {
 
+                let command = request.query.command;
+                if(command == "request") {
+                    let name = makeid();
+                    let path = __dirname+"/uploads/"+ name;
+                    let error = false;
+                    let requestedFund = request.payload["requestedFund"];
+                    let description = request.payload["description"];
+                    request.payload["document"].pipe(fs.createWriteStream(path));
+                    request.payload["document"].on('error', function (err) { 
+                        console.error(err);
+                        error = true;
+                    });
+                    request.payload["document"].on('end', function(err){
+                        console.log("completed");
+                        if(!error) {
+                            let request1 = {};
+                            request1.id = name;
+                            request1.requestedFund = requestedFund;
+                            request1.description = description;
+                            request1.approvedFund = 0;
+                            requests.push(request1);
+                            reply(request1).code(201);
+                            onFundRequest(request1);
+                        }
+                        else {
+                            reply("Error occured in uploading document").code(500);
+                        }
+                    })
+                }
+                else {
+                    if(command == "approve") {
+                        for(let index = 0; index< requests.length; index++) {
+                            if(request.payload["id"] == requests[index].id) {                                
+                                let approvedFund = request.payload["approvedFund"];
+                                requests[index].approvedFund = approvedFund;
+                                reply(requests[index]);
+                                onFundApproval(requests[index]);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        reply("Request not found with ID "+request.payload["id"]).code(400);
+                    }
+                }
+
+                
+            }
+      }        
+    }); 
+    
     server.route({
-        method: 'PUT',
-        path: '/transfer',
+        method: 'GET',
+        path: '/funds/{id}',
         handler: function (request, reply) {
-            let headers = {
-                "X-ACCESS-TOKEN":"7pnboh2ah6me04583n59s37sak",
-                "X-USER-ID":"16",
-                "X-DATE-TOKEN":"1"
-            };
-            http.get("api.pixyfi.com", "80", "/public/feeds?page=1", headers, function(res){
-                reply(res);
-            }, 'GET');
+            let found = false;
+            let id = request.params.id;
+            for(let index = 0; index< requests.length; index++) {
+                if(id == requests[index].id) {                                                    
+                    reply(requests[index]);
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) {
+                reply("Request not found").code(404);
+            }
         }
     });
+    
+    
+
+    // server.route({
+    //     method: 'POST',
+    //     path: '/uploadFile',
+    //     handler: function (request, reply) {
+            
+    //     }
+    // });
 
     server.start((err)=>{
         if(err){

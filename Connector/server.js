@@ -74,7 +74,7 @@ let app = () =>{
             path: '/api/{param*}',
             handler: {
                 directory: {
-                    path: 'E:\\development\\INHOUSE_APPS\\Connector\\Connector\\api'
+                    path: '/work/open-source/Connector/Connector/api'
                 }
                 }
         });

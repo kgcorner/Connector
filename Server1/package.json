@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register  './test/*spec*'",
-    "build": "babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
-    "start": "npm run build && node dist/server.js",
+    "start": "nodemon server.js  --inspect --exec babel-node --presets es2015,stage-2",
     "cover": "babel-node --presets es2015,stage-2 ./node_modules/istanbul/lib/cli cover node_modules/mocha/bin/_mocha -- '*/test*'"
   },
   "dependencies": {

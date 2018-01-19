@@ -12,11 +12,11 @@
    "basePath":"/",
    "tags":[
       {
-         "name":"manage",
+         "name":"Manage",
          "description":"Everything about authorization and authentication"
       },
       {
-         "name":"run",
+         "name":"Process",
          "description":"Access leave details"
       }
    ],
@@ -92,9 +92,9 @@
          }
       },
       "/channels/{channelId}/processes/{processId}":{
-         "delete":{
+         "post":{
             "tags":[
-               "Manage"
+               "Process"
             ],
             "summary":"Runs a process in channel",
             "description":"Run a step/process identified by processId defined in channel identified by channelId",
@@ -108,7 +108,7 @@
             "parameters":[
                {
                   "in":"path",
-                  "name":"id",
+                  "name":"channelId",
                   "description":"identifier of the Channel",
                   "required":true
                },
@@ -117,6 +117,12 @@
                   "name":"processId",
                   "description":"identifier of the step/process",
                   "required":true
+               },
+               {
+                  "in":"body",
+                  "name":"Payload",
+                  "description":"Payload for Channel",
+                  "required":"false"
                }
             ],
             "responses":{

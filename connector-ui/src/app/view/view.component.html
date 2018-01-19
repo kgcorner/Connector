@@ -1,0 +1,28 @@
+<h4> Create Connector</h4>
+<div *ngIf="!created; else created1">
+    <div>
+        <div class="row">
+            <div class="col-md-3">
+                Channel Identifier
+            </div>
+            <div class="col-md-9">
+                <input class="form-control"  type="text" #channelId (change)="setChannelId(channelId.value)" />
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-md-3">
+                    Channel Info
+                </div>
+                <div class="col-md-9">
+                    <textarea class="form-control"  (change)="setChannelData(channel.value)" #channel> </textarea>
+                </div>            
+        </div>
+        <div class="row">
+            <input type="button" class="btn btn-default" click="createChannel()" value="Create Channel" />
+        </div>
+    </div>
+</div>
+<ng-template #created1>
+    asdasd
+    {{message.message}}
+</ng-template>
